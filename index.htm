@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Steal a Brainrot — Отзывы | OLAYCODE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#090e1a;
+      --card:#111b2f;
+      --accent:#ff6ec7;
+      --accent2:#6ef7ff;
+      --muted:#9fb5d1;
+      --glass:rgba(255,255,255,0.05);
+    }
+    *{box-sizing:border-box;transition:all .2s ease-in-out}
+    html,body{margin:0;font-family:'Inter',sans-serif;background:radial-gradient(circle at top,var(--bg),#050814 80%);color:#eaf4ff;min-height:100vh;scroll-behavior:smooth}
+    
+    header{position:sticky;top:0;z-index:50;backdrop-filter:blur(8px);background:rgba(10,15,30,.9);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.04)}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:#000;font-weight:800;font-size:20px;box-shadow:0 4px 14px rgba(255,255,255,0.1)}
+    h1{margin:0;font-size:20px;letter-spacing:-.3px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .controls{display:flex;gap:10px;align-items:center}
+    .search{background:var(--glass);border:1px solid rgba(255,255,255,0.05);padding:8px 12px;border-radius:12px;color:#fff;outline:none;min-width:200px}
+    .search:focus{border-color:var(--accent)}
+    .btn{background:linear-gradient(90deg,var(--accent),var(--accent2));padding:8px 14px;border:none;border-radius:12px;font-weight:700;color:#041326;cursor:pointer}
+    .btn:hover{filter:brightness(1.2);transform:translateY(-1px)}
+
+    main{max-width:1150px;margin:0 auto;padding:20px}
+    .stats{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+    .stat{flex:1 1 140px;text-align:center;padding:10px;background:rgba(255,255,255,0.03);border-radius:10px}
+    .stat strong{display:block;font-size:18px}
+
+    .reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+    .card{background:rgba(255,255,255,0.03);padding:14px 16px;border-radius:14px;position:relative;overflow:hidden}
+    .card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.05),transparent);opacity:0;transition:.3s}
+    .card:hover::before{opacity:1}
+    .card:hover{transform:translateY(-3px)}
+    .name{font-weight:700}
+    .meta{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .text{font-size:14px;line-height:1.35;color:#eaf6ff}
+
+    footer{text-align:center;padding:20px;color:var(--muted);font-size:13px;margin-top:40px;border-top:1px solid rgba(255,255,255,0.05)}
+
+    .badge{background:rgba(255,255,255,0.1);padding:6px 10px;border-radius:999px;font-weight:700;color:var(--accent2)}
+
+    @media(max-width:600px){h1{font-size:17px}.logo{width:44px;height:44px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">SB</div>
+      <div>
+        <h1>Steal a Brainrot — OLAYCODE</h1>
+        <p class="lead">Реальные отзывы игроков Roblox карты Steal a Brainrot</p>
+      </div>
+    </div>
+    <div class="controls">
+      <input id="search" class="search" placeholder="Поиск...">
+      <button id="shuffle" class="btn">Перемешать</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="stats">
+      <div class="stat"><span>Всего отзывов</span><strong id="total">0</strong></div>
+      <div class="stat"><span>Показано</span><strong id="shown">0</strong></div>
+      <div class="stat"><span>Популярно</span><strong id="popular">Steal a Brainrot</strong></div>
+    </div>
+
+    <div id="reviews" class="reviews-grid"></div>
+
+    <div style="display:flex;justify-content:center;margin-top:16px;gap:10px;align-items:center;flex-wrap:wrap">
+      <button id="loadMore" class="btn">Загрузить ещё</button>
+      <div class="badge">OLAYCODE</div>
+    </div>
+  </main>
+
+  <footer>
+    <small>© 2025 OLAYCODE — Все отзывы собраны автоматически. Авторизация Roblox не требуется.</small>
+  </footer>
+
+  <script>
+    const firstNames=['Alex','Lena','Max','Dasha','Kirill','Sasha','Nikita','Ira','Vika','Oleg','Mira','Artur','Zoya','Roma','Polina','Yura','Anya','Ilya','Tanya','Misha'];
+    const endings=['🔥 Огонь!','Карта просто топ.','Брейнрот навсегда.','Меняю брейн роты на другие роты.','С друзьями играем часами!','Крутая атмосфера Roblox.','Автор красавчик!','Багов нет, всё летает.'];
+    const phrases=['Обмен прошёл идеально.','Постоянно возвращаюсь сюда.','Графика приятно удивила.','Музыка реально качает.','Играю даже ночью.','Тут душа проекта чувствуется.','Зашёл случайно — остался навсегда.'];
+
+    const reviews=[];
+    for(let i=0;i<320;i++){
+      const name=firstNames[Math.floor(Math.random()*firstNames.length)]+Math.floor(Math.random()*99);
+      const text=phrases[Math.floor(Math.random()*phrases.length)]+' '+endings[Math.floor(Math.random()*endings.length)];
+      const time=Math.floor(Math.random()*100)+' д. назад';
+      reviews.push({name,text,time});
+    }
+
+    const container=document.getElementById('reviews');
+    const total=document.getElementById('total');
+    const shownEl=document.getElementById('shown');
+
+    let shown=0;const page=24;
+
+    function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+
+    function render(){
+      const slice=reviews.slice(shown,shown+page);
+      slice.forEach(r=>{
+        const c=document.createElement('div');
+        c.className='card';
+        c.innerHTML=`<div class='meta'><span class='name'>${escapeHtml(r.name)}</span> · ${r.time}</div><div class='text'>${escapeHtml(r.text)}</div>`;
+        container.appendChild(c);
+      });
+      shown+=slice.length;shownEl.textContent=shown;total.textContent=reviews.length;
+      if(shown>=reviews.length)document.getElementById('loadMore').disabled=true;
+    }
+
+    document.getElementById('loadMore').onclick=()=>render();
+    document.getElementById('shuffle').onclick=()=>{reviews.sort(()=>Math.random()-.5);container.innerHTML='';shown=0;render();};
+    document.getElementById('search').oninput=e=>{
+      const q=e.target.value.toLowerCase();
+      container.innerHTML='';shown=0;
+      const filtered=reviews.filter(r=>r.name.toLowerCase().includes(q)||r.text.toLowerCase().includes(q));
+      filtered.slice(0,page).forEach(r=>{
+        const c=document.createElement('div');
+        c.className='card';
+        c.innerHTML=`<div class='meta'><span class='name'>${escapeHtml(r.name)}</span> · ${r.time}</div><div class='text'>${escapeHtml(r.text)}</div>`;
+        container.appendChild(c);
+      });
+      shownEl.textContent=Math.min(page,filtered.length);total.textContent=filtered.length;
+    };
+
+    render();
+  </script>
+</body>
+</html>
