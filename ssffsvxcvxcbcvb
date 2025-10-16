@@ -122,11 +122,7 @@
     document.getElementById('search').oninput=e=>{
       const q=e.target.value.toLowerCase();
       container.innerHTML='';shown=0;
-      const filtered=reviews.filter(r=>r.name.toLowerCase().includes(q)||r.text.toLowerCase().includes(q));
-      filtered.slice(0,page).forEach(r=>{
-        const c=document.createElement('div');
-        c.className='card';
-        c.innerHTML=`<div class='meta'><span class='name'>${escapeHtml(r.name)}</span> · ${r.time}</div><div class='text'>${escapeHtml(r.text)}</div>`;
+      const filtered=revta'><span class='name'>${escapeHtml(r.name)}</span> · ${r.time}</div><div class='text'>${escapeHtml(r.text)}</div>`;
         container.appendChild(c);
       });
       shownEl.textContent=Math.min(page,filtered.length);total.textContent=filtered.length;
